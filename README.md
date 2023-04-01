@@ -1,2 +1,1 @@
-# eks-repo
-AWS EKS workshop
+export AWS_PROFILE=devops
