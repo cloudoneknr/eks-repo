@@ -1,1 +1,1 @@
-export AWS_PROFILE=devops
+1. export AWS_PROFILE=devops
