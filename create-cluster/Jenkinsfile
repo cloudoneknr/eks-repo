@@ -4,19 +4,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'eksctl create cluster \
-                --name demo-eks-cluster \
-                --region us-east-1 \
-                --with-oidc  \
-                --zones us-east-1a,us-east-1b \
-                --version 1.23 \
-                --without-nodegroup \
-                --asg-access \
-                --external-dns-access \
-                --full-ecr-access \
-                --alb-ingress-access \
-                --verbose 4 \
-                --profile devops'
+                sh 'aws sts get-caller-identity'
             }
         }
     }
