@@ -1,0 +1,30 @@
+name: Build and Push docker image to ECR
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: "us-east-1"                   # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: MY_ECR_REPOSITORY           # set this to your Amazon ECR repository name
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  S3Packagelist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+        with:
+          role-to-assume: "arn:aws:iam::600605052115:role/actions"
+          role-session-name: actionsrolesession
+          aws-region: ${{ env.AWS_REGION }}
+      # Upload a file to AWS s3
+      - name: list s3 buckets
+        run: |
+          aws s3 ls

@@ -13,18 +13,33 @@ permissions:
   contents: read    # This is required for actions/checkout
 
 jobs:
-  S3Packagelist:
+  BuildAndPush:
     runs-on: ubuntu-latest
     steps:
-      - name: Git clone the repository
+      - name: Checkout
         uses: actions/checkout@v4
+
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: "arn:aws:iam::600605052115:role/actions"
           role-session-name: actionsrolesession
           aws-region: ${{ env.AWS_REGION }}
-      # Upload a file to AWS s3
-      - name: list s3 buckets
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: "600605052115.dkr.ecr.us-east-1.amazonaws.com/awsutils"
+          ECR_REPOSITORY: "awsutils"
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          aws s3 ls
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
