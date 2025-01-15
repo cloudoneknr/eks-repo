@@ -33,7 +33,7 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
-          ECR_REGISTRY: "600605052115.dkr.ecr.us-east-1.amazonaws.com/awsutils"
+          ECR_REGISTRY: "600605052115.dkr.ecr.us-east-1.amazonaws.com"
           ECR_REPOSITORY: "awsutils"
           IMAGE_TAG: ${{ github.sha }}
         run: |
